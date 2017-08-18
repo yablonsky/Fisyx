@@ -1,5 +1,6 @@
-package com.ayablonskyy.phi6.orbiter;
+package com.ayablonskyy.phi6.screens;
 
+import com.ayablonskyy.phi6.orbiter.Planet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;

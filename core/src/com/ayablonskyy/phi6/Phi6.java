@@ -1,6 +1,7 @@
 package com.ayablonskyy.phi6;
 
-import com.ayablonskyy.phi6.orbiter.OrbiterScreen;
+import com.ayablonskyy.phi6.screens.MenuScreen;
+import com.ayablonskyy.phi6.screens.VectorsScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -9,7 +10,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Phi6 extends Game {
     private OrthographicCamera camera;
     private SpriteBatch batch;
-    private final static float CAMERA_RATIO = 900;
+    private MenuScreen menuScreen;
+    private final static float CAMERA_RATIO = 10;
 
     @Override
     public void create() {
@@ -19,7 +21,9 @@ public class Phi6 extends Game {
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
         batch = new SpriteBatch();
-        this.setScreen(new OrbiterScreen(camera, batch));
+        menuScreen = new MenuScreen(camera, batch);
+        VectorsScreen vectorsScreen = new VectorsScreen(camera);
+        this.setScreen(vectorsScreen);
     }
 
     @Override
@@ -27,11 +31,13 @@ public class Phi6 extends Game {
         super.resize(width, height);
         camera.viewportWidth = CAMERA_RATIO;
         camera.viewportHeight = CAMERA_RATIO * height / width;
+//        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
     }
 
     @Override
     public void dispose () {
         batch.dispose();
+        menuScreen.dispose();
     }
 }
