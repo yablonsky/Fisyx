@@ -40,18 +40,26 @@ public class VectorsScreen extends ScreenAdapter {
         update(0);
     }
 
+    public Vector2 reflectionSimple(Vector2 norWall) {
+        /**
+         * Project vector onto wall normal unit vector (points to square centre point)
+         * http://www.3dkingdoms.com/weekly/weekly.php?a=2
+         * Vnew = -2*(V dot N)*N + V
+         */
+        return norWall.scl(-2 * vector.dot(norWall)).add(vector);
+    }
+
+    public Vector2 reflectionFull() {
+        return projec.cpy().sub(rejec);
+    }
+
     public void update(float delta) {
         Vector2 norWall = wall.cpy().nor();
-
         projec = norWall.cpy().scl(vector.dot(norWall));
         rejec = vector.cpy().sub(projec);
-//        reflection = projec.cpy().sub(rejec);
-//        reflection = rejec.cpy().sub(projec);
-
-        reflection = norWall.scl(-2 * vector.dot(norWall)).add(vector);
+        reflection = reflectionSimple(rejec.cpy().nor());
+//        reflection = reflectionFull();
         wall.setAngle(wall.angle() + delta * 10);
-//        Vnew = -2*(V dot N)*N + V
-//        velocity.add(wall.scl(-2 * velocity.dot(wall)));
     }
 
     @Override
