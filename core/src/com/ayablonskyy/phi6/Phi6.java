@@ -1,17 +1,25 @@
 package com.ayablonskyy.phi6;
 
 import com.ayablonskyy.phi6.screens.MenuScreen;
-import com.ayablonskyy.phi6.screens.VectorsScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Phi6 extends Game {
-    private OrthographicCamera camera;
-    private SpriteBatch batch;
+    public SpriteBatch batch;
+    public BitmapFont font;
+    public OrthographicCamera camera;
+
     private MenuScreen menuScreen;
     private final static float CAMERA_RATIO = 10;
+    private InputAdapter inputProcessor;
+    private InputMultiplexer inputMultiplexer;
 
     @Override
     public void create() {
@@ -21,9 +29,30 @@ public class Phi6 extends Game {
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
         batch = new SpriteBatch();
-        menuScreen = new MenuScreen(camera, batch);
-        VectorsScreen vectorsScreen = new VectorsScreen(camera);
-        this.setScreen(vectorsScreen);
+        font = new BitmapFont();
+        inputProcessor = new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                Gdx.app.log("keyDown", String.format("%d", keycode));
+                if (keycode == Input.Keys.ESCAPE) {
+                    if (getScreen() != menuScreen) {
+                        setScreen(menuScreen);
+                    } else {
+                        Gdx.app.exit();
+                    }
+                }
+                return true;
+            }
+        };
+        inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(inputProcessor);
+        Gdx.input.setInputProcessor(inputMultiplexer);
+        menuScreen = new MenuScreen(this);
+        setScreen(menuScreen);
+    }
+
+    public void addInputProcessor(InputProcessor inputProcessor) {
+        inputMultiplexer.addProcessor(inputProcessor);
     }
 
     @Override
@@ -39,5 +68,6 @@ public class Phi6 extends Game {
     public void dispose () {
         batch.dispose();
         menuScreen.dispose();
+        font.dispose();
     }
 }

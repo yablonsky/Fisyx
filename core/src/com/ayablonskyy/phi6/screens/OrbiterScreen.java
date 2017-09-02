@@ -28,6 +28,10 @@ public class OrbiterScreen extends ScreenAdapter {
 
     @Override
     public void show () {
+        int h = Gdx.graphics.getHeight();
+        int w = Gdx.graphics.getWidth();
+        int viewportWidth = 1000;
+        camera.setToOrtho(false, viewportWidth, viewportWidth * h / w);
         planet = new Planet(camera.viewportWidth / 2, camera.viewportHeight / 2, 100, Color.BLUE);
         target = new Planet(camera.viewportWidth / 2, camera.viewportHeight / 2 + 100, 10, Color.WHITE);
 
