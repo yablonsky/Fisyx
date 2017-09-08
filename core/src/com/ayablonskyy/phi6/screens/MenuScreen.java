@@ -3,17 +3,16 @@ package com.ayablonskyy.phi6.screens;
 import com.ayablonskyy.phi6.Phi6;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by and on 8/15/2017.
@@ -23,6 +22,7 @@ public class MenuScreen extends ScreenAdapter {
     private final Phi6 phi6;
     private Stage stage;
     private Table table;
+    private Skin skin;
 
     private enum ButtonLabel {
         VECTORS("Vectors"), ORBITER("Orbiter"), HELP("Help");
@@ -46,40 +46,33 @@ public class MenuScreen extends ScreenAdapter {
     @Override
     public void show() {
         super.show();
+        skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage();
         table = new Table();
         table.setFillParent(true);
         table.setDebug(true);
         stage.addActor(table);
 
-        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
-        pixmap.setColor(Color.GRAY);
-        style.up = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
-        pixmap.setColor(Color.LIGHT_GRAY);
-        style.down = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
-        pixmap.dispose();
-        style.font = phi6.font;
-        TextButton vectors = new TextButton(ButtonLabel.VECTORS.label, style);
-//        vectors.setSize();
-        table.add(vectors).expand().fill();
-        table.row();
-        TextButton orbiter = new TextButton(ButtonLabel.ORBITER.label, style);
-        table.add(orbiter).expand().fill();
-        table.row();
-        table.add(new TextButton(ButtonLabel.HELP.label, style)).expand().fill();
+        final LinkedHashMap<ButtonLabel, TextButton> buttons = new LinkedHashMap<ButtonLabel, TextButton>();
+        buttons.put(ButtonLabel.VECTORS, new TextButton(ButtonLabel.VECTORS.label, skin));
+        buttons.put(ButtonLabel.ORBITER, new TextButton(ButtonLabel.ORBITER.label, skin));
+        buttons.put(ButtonLabel.HELP, new TextButton(ButtonLabel.HELP.label, skin));
+
+        for (Map.Entry<ButtonLabel, TextButton> entry : buttons.entrySet()) {
+            table.add(entry.getValue()).expand().fill();
+            table.row();
+        }
+
         table.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("ChangeListener", String.format("Event: %s, Actor: %s", event, actor));
                 if (actor instanceof TextButton) {
-                    String label = ((TextButton) actor).getLabel().getText().toString();
-                    Gdx.app.log("ChangeListener", String.format("Label: %s", label));
-                    if (label.equals(ButtonLabel.VECTORS.label)) {
+                    if (actor == buttons.get(ButtonLabel.VECTORS)) {
                         phi6.setScreen(new VectorsScreen(phi6.camera));
-                    } else if (label.equals(ButtonLabel.ORBITER.label)) {
+                    } else if (actor == buttons.get(ButtonLabel.ORBITER)) {
                         phi6.setScreen(new OrbiterScreen(phi6.camera, phi6.batch));
-                    } else if (label.equals(ButtonLabel.HELP.label)) {
+                    } else if (actor == buttons.get(ButtonLabel.HELP)) {
                         Gdx.app.log("ChangeListener", "Help button");
                     }
                     dispose();

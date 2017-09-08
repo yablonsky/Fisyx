@@ -19,7 +19,7 @@ public class Planet extends Sprite{
     private Color color;
     private Circle circle;
     private Vector2 position;
-    private Vector2 velocity;
+    public Vector2 velocity;
     private Vector2 acceleration;
 
 
@@ -64,8 +64,11 @@ public class Planet extends Sprite{
     public void bump(Planet other) {
         if (circle.overlaps(other.getCircle())) {
             Vector2 normal = position.cpy().sub(other.getPosition());
+            float dist = normal.len();
             normal.setLength(1);
-            velocity.add(normal.scl(-2 * velocity.dot(normal)));
+            float deviation = circle.radius + other.getCircle().radius - dist;
+            velocity.add(normal.cpy().scl(-2 * velocity.dot(normal)));
+            position.add(normal.cpy().scl(deviation));
         }
     }
 
