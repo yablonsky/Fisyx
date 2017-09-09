@@ -35,14 +35,12 @@ public class OrbiterScreen extends ScreenAdapter {
         target = new Planet(camera.viewportWidth / 2 + 50, camera.viewportHeight / 2 + 100, 10, Color.WHITE);
 
         moon = new Planet(camera.viewportWidth / 2 - 100, camera.viewportHeight / 2 + 100, 10, Color.RED);
-//        moon.applyForce(target.getPosition().cpy().sub(moon.getPosition()).scl(1));
+        moon.applyForce(target.getPosition().cpy().sub(moon.getPosition()).scl(2));
     }
 
     @Override
     public void render (float delta) {
-        moon.applyForce(planet.getPosition().cpy().sub(moon.getPosition()).scl(0.05f));
-        moon.update(delta);
-        moon.bump(planet);
+        update(delta);
 
         camera.update();
         batch.setProjectionMatrix(camera.combined);
@@ -57,6 +55,14 @@ public class OrbiterScreen extends ScreenAdapter {
         font.draw(batch, "velocity: " + moon.velocity.len(), 0, 0);
         batch.end();
 
+    }
+
+    protected void update(float delta) {
+        moon.update(delta);
+        boolean bumped = moon.bump(planet);
+        if (!bumped) {
+            moon.applyForce(planet.getPosition().cpy().sub(moon.getPosition()).scl(delta * 20));
+        }
     }
 
     @Override

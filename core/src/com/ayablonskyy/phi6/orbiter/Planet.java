@@ -1,5 +1,6 @@
 package com.ayablonskyy.phi6.orbiter;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -61,15 +62,19 @@ public class Planet extends Sprite{
         circle.setPosition(position);
     }
 
-    public void bump(Planet other) {
+    public boolean bump(Planet other) {
         if (circle.overlaps(other.getCircle())) {
+            Gdx.app.log("Planet.velocity", new Float(velocity.len()).toString());
             Vector2 normal = position.cpy().sub(other.getPosition());
             float dist = normal.len();
             normal.setLength(1);
-            float deviation = circle.radius + other.getCircle().radius - dist;
             velocity.add(normal.cpy().scl(-2 * velocity.dot(normal)));
-            position.add(normal.cpy().scl(deviation));
+            float deviation = circle.radius + other.getCircle().radius - dist;
+//            position.add(normal.cpy().scl(deviation));
+//            position.add(normal.cpy().scl(-2 * deviation));
+            return true;
         }
+        return false;
     }
 
     public void dispose() {
