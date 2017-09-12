@@ -30,6 +30,7 @@ public class Phi6 extends Game {
         camera.update();
         batch = new SpriteBatch();
         font = new BitmapFont();
+        font.setColor(1,1,1,1);
         inputProcessor = new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {

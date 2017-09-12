@@ -25,7 +25,7 @@ public class MenuScreen extends ScreenAdapter {
     private Skin skin;
 
     private enum ButtonLabel {
-        VECTORS("Vectors"), ORBITER("Orbiter"), HELP("Help");
+        VECTORS("Vectors"), BOUNCE("Bounce"), ORBITER("Orbiter"), HELP("Help");
 
         public final String label;
         ButtonLabel(String label) {
@@ -55,6 +55,7 @@ public class MenuScreen extends ScreenAdapter {
 
         final LinkedHashMap<ButtonLabel, TextButton> buttons = new LinkedHashMap<ButtonLabel, TextButton>();
         buttons.put(ButtonLabel.VECTORS, new TextButton(ButtonLabel.VECTORS.label, skin));
+        buttons.put(ButtonLabel.BOUNCE, new TextButton(ButtonLabel.BOUNCE.label, skin));
         buttons.put(ButtonLabel.ORBITER, new TextButton(ButtonLabel.ORBITER.label, skin));
         buttons.put(ButtonLabel.HELP, new TextButton(ButtonLabel.HELP.label, skin));
 
@@ -69,9 +70,11 @@ public class MenuScreen extends ScreenAdapter {
                 Gdx.app.log("ChangeListener", String.format("Event: %s, Actor: %s", event, actor));
                 if (actor instanceof TextButton) {
                     if (actor == buttons.get(ButtonLabel.VECTORS)) {
-                        phi6.setScreen(new VectorsScreen(phi6.camera));
+                        phi6.setScreen(new VectorsScreen(phi6));
+                    } else if (actor == buttons.get(ButtonLabel.BOUNCE)) {
+                        phi6.setScreen(new BounceScreen(phi6));
                     } else if (actor == buttons.get(ButtonLabel.ORBITER)) {
-                        phi6.setScreen(new OrbiterScreen(phi6.camera, phi6.batch));
+                        phi6.setScreen(new OrbiterScreen(phi6));
                     } else if (actor == buttons.get(ButtonLabel.HELP)) {
                         Gdx.app.log("ChangeListener", "Help button");
                     }

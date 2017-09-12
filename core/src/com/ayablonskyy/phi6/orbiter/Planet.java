@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
@@ -14,26 +16,29 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Planet extends Sprite{
     private final float radius;
-    private final float mass;
+    public final float mass;
     private final float density = 1;
 
     private Color color;
     private Circle circle;
-    private Vector2 position;
+    public Vector2 position;
     public Vector2 velocity;
-    private Vector2 acceleration;
+    public Vector2 acceleration;
 
-
-    public Planet(float x, float y, float radius, Color color) {
+    public Planet(Vector2 position, float radius, Color color) {
         super(createTexture(radius, color));
-        position = new Vector2(x, y);
+        this.position = position;
         this.radius = radius;
         this.color = color;
         velocity = new Vector2();
         acceleration = new Vector2();
         circle = new Circle(position, radius);
         mass = circle.area() * density;
-        setBounds(x - radius, y - radius, radius * 2, radius * 2);
+        setBounds(position.x - radius, position.y - radius, radius * 2, radius * 2);
+    }
+
+    public Planet(float x, float y, float radius, Color color) {
+        this(new Vector2(x, y), radius, color);
     }
 
     private static Texture createTexture(float radius, Color color) {
@@ -46,6 +51,17 @@ public class Planet extends Sprite{
         return texture;
     }
 
+    public void draw(Batch batch, BitmapFont font) {
+        draw(batch, font, false);
+    }
+
+    public void draw(Batch batch, BitmapFont font, boolean debug) {
+        super.draw(batch);
+        if (debug) {
+            font.draw(batch, "velocity: " + velocity.len(), position.x, position.y);
+        }
+    }
+
     public void update(float deltaT) {
         velocity.add(acceleration);
         position.add(velocity);
@@ -55,6 +71,15 @@ public class Planet extends Sprite{
 
     public void applyForce(Vector2 force) {
         acceleration.add(force.cpy().add(force).scl(1 / mass));
+    }
+
+    public void attract(Planet other) {
+        Vector2 force = position.cpy().sub(other.position);
+        float distance = force.len();
+        force.setLength(1);
+        float strength = mass * other.mass / (distance * distance);
+        force.scl(strength / 100000);
+        other.acceleration.add(force);
     }
 
     public void setPosition() {
@@ -87,5 +112,22 @@ public class Planet extends Sprite{
 
     public Vector2 getPosition() {
         return position;
+    }
+
+    public boolean boxBounce(int originX, int originY, float viewportWidth, float viewportHeight) {
+        if (position.x >= originX + viewportWidth - radius) {
+            velocity.x = -velocity.x;
+            return true;
+        } else if (position.x <= originX + radius) {
+            velocity.x = -velocity.x;
+            return true;
+        } else if (position.y >= originY + viewportHeight - radius) {
+            velocity.y = -velocity.y;
+            return true;
+        } else if (position.y <= originY + radius) {
+            velocity.y = -velocity.y;
+            return true;
+        }
+        return false;
     }
 }

@@ -1,5 +1,6 @@
 package com.ayablonskyy.phi6.screens;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 
 public class VectorsScreen extends ScreenAdapter {
+    Game phi6;
     ShapeRenderer batch;
     OrthographicCamera camera;
     Vector2 vector;
@@ -22,8 +24,8 @@ public class VectorsScreen extends ScreenAdapter {
     Vector2 rejec;
     Vector2 reflection;
 
-    public VectorsScreen(OrthographicCamera camera) {
-        this.camera = camera;
+    public VectorsScreen(Game phi6) {
+        this.phi6 = phi6;
     }
 
     @Override
