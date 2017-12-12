@@ -3,6 +3,7 @@ package com.ayablonskyy.phi6.screens;
 import com.ayablonskyy.phi6.Phi6;
 import com.ayablonskyy.phi6.lib.Phi6ScreenAdapter;
 import com.ayablonskyy.phi6.orbiter.Planet;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
@@ -14,6 +15,7 @@ public class OrbiterScreen extends Phi6ScreenAdapter {
     private Planet planet;
     private Planet moon;
     private Planet target;
+    private InputAdapter inputProcessor;
 
     public OrbiterScreen(Phi6 phi6) {
         super(phi6);
@@ -23,6 +25,14 @@ public class OrbiterScreen extends Phi6ScreenAdapter {
     @Override
     public void show () {
         super.show();
+        inputProcessor = new InputAdapter() {
+            @Override
+            public boolean scrolled(int amount) {
+                phi6.camera.zoom += amount * 0.2;
+                return true;
+            }
+        };
+        phi6.addInputProcessor(inputProcessor);
         Vector2 viewportCenter = new Vector2(phi6.camera.viewportWidth / 2, phi6.camera.viewportHeight / 2);
         planet = new Planet(viewportCenter, 100, Color.BLUE);
         moon = new Planet(viewportCenter.x - 100, viewportCenter.y + 100, 10, Color.RED);

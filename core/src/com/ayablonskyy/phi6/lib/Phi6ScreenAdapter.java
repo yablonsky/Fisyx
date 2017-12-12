@@ -24,6 +24,7 @@ public abstract class Phi6ScreenAdapter extends ScreenAdapter {
     }
 
     protected void initCamera() {
+        phi6.camera.zoom = 1;
         int h = Gdx.graphics.getHeight();
         int w = Gdx.graphics.getWidth();
         phi6.camera.setToOrtho(false, viewportWidth, viewportWidth * h / w);
